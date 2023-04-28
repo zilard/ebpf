@@ -8,7 +8,7 @@ run: build
 	sudo ./$(APP)
 
 .PHONY: gen
-gen: sum vmlinux gen_execve_bpfel.go
+gen: sum vmlinux bpf_target gen_execve_bpfel.go
 
 .PHONY: vmlinux
 vmlinux: bpf/vmlinux.h
@@ -34,8 +34,11 @@ $(APP): main.go gen_execve_bpfel.go
 bpf/vmlinux.h:
 	bpftool btf dump file /sys/kernel/btf/vmlinux format c > bpf/vmlinux.h
 
-gen_execve_bpfel.go: bpf/execve.bpf.c
-	CC=gcc CGO_CFLAGS="-I /usr/include/bpf" CGO_LDFLAGS="/usr/lib64/libbpf.a" go generate *.go
+bpf_target: bpf/execve.bpf.c
+	clang -I "/usr/include/" -g -O2 -c -target bpf -o bpf/execve.bpf.o bpf/execve.bpf.c
+
+gen_execve_bpfel.go:
+	CC=gcc CGO_CFLAGS="-I /usr/include/" CGO_LDFLAGS="/usr/lib/x86_64-linux-gnu/libbpf.a" go generate *.go
 
 go.sum:
 	go mod download github.com/cilium/ebpf

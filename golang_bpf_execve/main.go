@@ -36,7 +36,7 @@ func main() {
 	objs := gen_execveObjects{}
 
 	loadGen_execveObjects(&objs, nil)
-	link.Tracepoint("syscalls", "sys_enter_execve", objs.EnterExecve)
+	link.Tracepoint("syscalls", "sys_enter_execve", objs.EnterExecve, nil)
 
 	rd, err := perf.NewReader(objs.Events, os.Getpagesize())
 	if err != nil {

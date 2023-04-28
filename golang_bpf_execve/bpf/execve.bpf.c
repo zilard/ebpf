@@ -1,3 +1,4 @@
+//go:build ignore
 #include "vmlinux.h"
 #include <bpf/bpf_helpers.h>
 
@@ -9,12 +10,12 @@ struct exec_data_t {
     u8 comm[FNAME_LEN];    // process calling execve
 };
 
-struct exec_data_t _edt {0};
+struct exec_data_t _edt = {0};
 
 struct {
-    _uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
-    _uint(key_size, sizeof(u32));
-    _uint(value_size, sizeof(u32));
+    __uint(type, BPF_MAP_TYPE_PERF_EVENT_ARRAY);
+    __uint(key_size, sizeof(u32));
+    __uint(value_size, sizeof(u32));
 } events SEC(".maps");
 
 struct execve_entry_args_t {
