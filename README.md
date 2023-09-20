@@ -1,4 +1,4 @@
-<span style="font-size:26px;"><strong>How to write eBPF program using the libbpf framework</strong></span><br />
+<span style="font-size:26px;">How to write eBPF program using the libbpf framework</span><br />
 <br />
 <strong>Problem Description</strong><br />
 <br />
