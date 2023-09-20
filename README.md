@@ -1,8 +1,8 @@
 # Table of Contents
 
-- [eBPF program using the libbpf framework](https://github.com/zilard/ebpf/edit/main/README.md#ebpf-program-using-the-libbpf-framework)
-- [eBPF program using the BCC framework loaded with Python script](https://github.com/zilard/ebpf/edit/main/README.md#ebpf-program-using-the-bcc-framework-loaded-with-python-script)
-- [eBPF oneliner with bpftrace for tracing NVMe driver data structure members](https://github.com/zilard/ebpf/edit/main/README.md#ebpf-oneliner-with-bpftrace-for-tracing-nvme-driver-data-structure-members)
+- [eBPF program using the libbpf framework](https://github.com/zilard/ebpf/main/README.md#ebpf-program-using-the-libbpf-framework)
+- [eBPF program using the BCC framework loaded with Python script](https://github.com/zilard/ebpf/main/README.md#ebpf-program-using-the-bcc-framework-loaded-with-python-script)
+- [eBPF oneliner with bpftrace for tracing NVMe driver data structure members](https://github.com/zilard/ebpf/main/README.md#ebpf-oneliner-with-bpftrace-for-tracing-nvme-driver-data-structure-members)
 
 
 
