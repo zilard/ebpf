@@ -869,7 +869,7 @@ int trace_nvme_submit_user_cmd(struct pt_regs *ctx,
 &quot;&quot;&quot;
 
 
-# process event
+\# process event
 def print_event(cpu, data, size):
 
     event = b[&quot;events&quot;].event(data)
@@ -886,19 +886,19 @@ def print_event(cpu, data, size):
            ))
 
 
-# initialize BPF
+\# initialize BPF
 b = BPF(text=bpf_text)
 
 b.attach_kprobe(event=&quot;nvme_submit_user_cmd&quot;, fn_name=&quot;trace_nvme_submit_user_cmd&quot;)
 
 
-# header
+\# header
 print(&quot;%-9s %-9s %-7s %-8s %-12s %-6s %-6s&quot; % (
       &quot;TIME&quot;, &quot;COMM&quot;, &quot;PID&quot;, &quot;OPCODE&quot;, &quot;COMMAND-ID&quot;, &quot;NSID&quot;, &quot;CDW10&quot;))
 
 
-# read events
-# loop with callback to print_event
+\# read events
+\# loop with callback to print_event
 b[&quot;events&quot;].open_perf_buffer(print_event, page_cnt=64)
 while 1:
     try:
