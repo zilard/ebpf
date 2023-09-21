@@ -1,0 +1,19 @@
+#!/usr/bin/env bpftrace
+
+BEGIN
+{
+        printf("Tracing NVME ioctl syscalls... Hit Ctrl-C to end.\n");
+        printf("%-9s %-7s %-6s %-8s %-12s %-6s %-6s\n", 
+               "TIME", "COMM", "PID", "OPCODE", "COMMAND-ID", "NSID", "CDW10");
+}
+
+kprobe:nvme_submit_user_cmd
+{
+        time("%H:%M:%S  ");
+        printf("%-7s %-6d %-8x %-12x %-6x %-6x\n", 
+               comm, pid,
+               ((struct nvme_command *)arg1)->common.opcode,
+               ((struct nvme_command *)arg1)->common.command_id, 
+               ((struct nvme_command *)arg1)->common.nsid,
+               ((struct nvme_command *)arg1)->common.cdw10);
+}
