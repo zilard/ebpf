@@ -1,0 +1,39 @@
+#!/usr/bin/env bpftrace
+
+struct hpsa_pci_info {
+        unsigned char   bus;
+        unsigned char   dev_fn;
+        unsigned short  domain;
+        u32             board_id;
+};
+
+
+BEGIN
+{
+        printf("Tracing SG_IO ioctl syscalls... Hit Ctrl-C to end.\n");
+       
+        printf("%-9s %-7s %-16s %-7s\n",
+               "TIME", "COMM", "PID", "ANY");
+}
+
+kprobe:hpsa_ioctl
+{
+	@arg2[tid] = (struct hpsa_pci_info *)arg2;
+}
+
+
+kretprobe:hpsa_ioctl
+/@arg2[tid] != 0/
+{
+        $arg = @arg2[tid];
+
+        time("%H:%M:%S  ");
+        printf("%-7s %-16d %-7d\n",
+               curtask->comm, curtask->pid,
+               $arg->domain
+        );
+
+        delete(@arg2[tid]);
+}
+
+

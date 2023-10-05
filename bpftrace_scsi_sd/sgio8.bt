@@ -1,0 +1,36 @@
+#!/usr/bin/env bpftrace
+
+struct ctlr_info {
+        unsigned int *reply_map;
+        int     ctlr;
+        char    devname[8];
+        char    *product_name;
+        struct pci_dev *pdev;
+}
+
+
+BEGIN
+{
+        printf("Tracing SG_IO ioctl syscalls... Hit Ctrl-C to end.\n");
+       
+        printf("%-9s %-7s %-16s %-7s\n",
+               "TIME", "COMM", "PID", "ANY");
+}
+
+kprobe:hpsa_ioctl
+{
+
+        $a1 = (struct Scsi_Host *)(((struct scsi_device *)arg0)->host);
+        $a2 = (struct ctlr_info *)($a1->hostdata[0]);
+        $a3 = (struct pci_dev *)($a2->pdev);
+
+        time("%H:%M:%S  ");
+
+        printf("%-7s %-16d %-7s %-7d\n",
+               curtask->comm, curtask->pid,
+               $a2->devname,
+               $a3->hdr_type
+        );
+
+}
+
