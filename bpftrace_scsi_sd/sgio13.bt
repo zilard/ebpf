@@ -1,0 +1,39 @@
+#!/usr/bin/env bpftrace
+
+
+BEGIN
+{
+        printf("Tracing SG_IO ioctl syscalls... Hit Ctrl-C to end.\n");
+       
+        printf("%-9s %-7s %-16s %-7s\n",
+               "TIME", "COMM", "PID", "ANY");
+}
+
+kprobe:sd_ioctl
+{
+
+        $a1 = (struct gendisk *)(((struct block_device *)arg0)->bd_disk);
+        $a2 = (struct scsi_device *)(((struct scsi_disk *)$a1)->device);
+        
+        @a3[tid] = (struct scsi_vpd *)($a2->vpd_pg83);
+
+}
+
+
+kretprobe:sd_ioctl
+/@a3[tid] != 0/
+{
+        $a3 = @a3[tid];
+
+        time("%H:%M:%S  ");
+
+        printf("%-7s %-16d %-7d %-3d %-3d\n",
+               curtask->comm, curtask->pid,
+               $a3->len,
+               $a3->data[0],
+               $a3->data[31]
+        );
+
+        delete(@a3[tid]);
+}
+

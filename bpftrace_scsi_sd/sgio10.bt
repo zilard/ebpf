@@ -1,0 +1,31 @@
+#!/usr/bin/env bpftrace
+
+
+BEGIN
+{
+        printf("Tracing SG_IO ioctl syscalls... Hit Ctrl-C to end.\n");
+       
+        printf("%-9s %-7s %-16s %-7s\n",
+               "TIME", "COMM", "PID", "ANY");
+}
+
+kprobe:hpsa_ioctl
+{
+
+        $a1 = (struct scsi_vpd *)(((struct scsi_device *)arg0)->vpd_pg83);
+
+        time("%H:%M:%S  ");
+
+        printf("%-7s %-16d %-7d %-3d %-3d %-3d %-3d %-3d %-3d\n",
+               curtask->comm, curtask->pid,
+               $a1->len,
+               $a1->data[0],
+               $a1->data[8],
+               $a1->data[16],
+               $a1->data[22],
+               $a1->data[28],
+               $a1->data[31]
+        );
+
+}
+

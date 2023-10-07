@@ -8,7 +8,7 @@ BEGIN
                "TIME", "COMM", "PID", "CMD");
 }
 
-kprobe:sd_get_unique_id
+kprobe:sd_probe
 {
         time("%H:%M:%S  ");
 
