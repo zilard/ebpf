@@ -1,0 +1,33 @@
+#!/usr/bin/env bpftrace
+
+
+BEGIN
+{
+        printf("Tracing SG_IO ioctl syscalls... Hit Ctrl-C to end.\n");
+       
+        printf("%-9s %-16s %-8s %-4s %-4s\n",
+               "TIME", "COMM", "PID", "LEN", "DATA");
+}
+
+kprobe:scsi_ioctl
+{
+
+        $a1 = (struct scsi_vpd *)(((struct scsi_device *)arg0)->vpd_pg83);
+
+        time("%H:%M:%S  ");
+
+        printf("%-16s %-8d %-4x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+               curtask->comm, curtask->pid,
+               $a1->len,
+               $a1->data[0], $a1->data[1], $a1->data[2], $a1->data[3],
+               $a1->data[4], $a1->data[5], $a1->data[6], $a1->data[7],
+               $a1->data[8], $a1->data[9], $a1->data[10], $a1->data[11],
+               $a1->data[12], $a1->data[13], $a1->data[14], $a1->data[15],
+               $a1->data[16], $a1->data[17], $a1->data[18], $a1->data[19],
+               $a1->data[20], $a1->data[21], $a1->data[22], $a1->data[23],
+               $a1->data[24], $a1->data[25], $a1->data[26], $a1->data[27],
+               $a1->data[28], $a1->data[29], $a1->data[30], $a1->data[31]
+        );
+
+}
+

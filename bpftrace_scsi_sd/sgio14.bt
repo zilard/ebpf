@@ -20,7 +20,8 @@ kretprobe:sd_ioctl
 {
         $a0 = @a0[tid];
 
-        $a1 = (struct gendisk *)(((struct block_device *)$a0)->bd_disk);                $a2 = (struct scsi_device *)(((struct scsi_disk *)$a1)->device);
+        $a1 = (struct gendisk *)(((struct block_device *)$a0)->bd_disk);
+        $a2 = (struct scsi_device *)(((struct scsi_disk *)$a1)->device);
         $a3 = (struct scsi_vpd *)($a2->vpd_pg83);
 
         time("%H:%M:%S  ");
