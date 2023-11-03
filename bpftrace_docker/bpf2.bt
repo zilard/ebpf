@@ -1,0 +1,39 @@
+#!/usr/local/bin/bpftrace
+uprobe:/usr/bin/dockerd:0x0000563a10b30320 {
+    @start[tid] = nsecs;
+}
+
+uprobe:/usr/bin/dockerd:0x0000563a10b30461 {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x0000563a10b30471 {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x0000563a10b3066d {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x0000563a10b30683 {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x0000563a10b30898 {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}

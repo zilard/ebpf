@@ -1,0 +1,12 @@
+#!/usr/local/bin/bpftrace
+
+uprobe:/usr/bin/dockerd:"github.com/docker/docker/api/server/router/network.(*networkRouter).getNetworksList" {
+    @start[tid] = nsecs;
+}
+
+uretprobe:/usr/bin/dockerd:"github.com/docker/docker/api/server/router/network.(*networkRouter).getNetworksList" {
+    if (@start[tid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[tid]) / 1000000);
+        delete(@start[tid]);
+    }
+}

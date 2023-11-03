@@ -1,0 +1,63 @@
+#!/usr/local/bin/bpftrace
+uprobe:/usr/bin/dockerd:"github.com/docker/docker/api/server/router/network.(*networkRouter).getNetworksList" {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    @start[$goid] = nsecs;
+}
+
+uprobe:/usr/bin/dockerd:0x00000000028b2461 {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    if (@start[$goid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[$goid]) / 1000000);
+        delete(@start[$goid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x00000000028b2471 {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    if (@start[$goid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[$goid]) / 1000000);
+        delete(@start[$goid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x00000000028b266d {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    if (@start[$goid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[$goid]) / 1000000);
+        delete(@start[$goid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x00000000028b2683 {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    if (@start[$goid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[$goid]) / 1000000);
+        delete(@start[$goid]);
+    }
+}
+
+uprobe:/usr/bin/dockerd:0x00000000028b2898 {
+    $task = (struct task_struct*)curtask;
+    $fs = (uint64)$task->thread.fsbase;
+    $gaddr = *(uint64*)uptr($fs-8);
+    $goid = *(uint64*)uptr($gaddr+152);
+    if (@start[$goid] != 0) {
+        printf("getNetworksList took %d ms\n", (nsecs - @start[$goid]) / 1000000);
+        delete(@start[$goid]);
+    }
+}
