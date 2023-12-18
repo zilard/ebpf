@@ -88,6 +88,12 @@ symbols = [
 "intel_svm_alloc_pasid_tables",
 "intel_svm_enable_prq",
 "intel_alloc_coherent",
+"alloc_pages_current",
+"alloc_pages_vma",
+"alloc_page_interleave",
+"get_page_from_freelist",
+"alloc_huge_page_nodemask",
+"__alloc_pages_nodemask",
 ]
 
 
