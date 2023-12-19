@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from bcc import BPF
-from time import strftime
+from time import sleep, strftime
 
 # define BPF program
 bpf_head = """
@@ -68,7 +68,34 @@ def print_event(cpu, data, size):
 
 
 
-symbols = ["__page_cache_alloc", "__pmd_alloc"]
+symbols = [
+"__page_cache_alloc",
+"__pmd_alloc",
+"mempool_alloc_pages",
+"alloc_skb_with_frags",
+"skb_page_frag_refill",
+"kmalloc_order",
+"__get_free_pages",
+"pcpu_create_chunk",
+"kimage_alloc_pages",
+"sgl_alloc_order",
+"pte_alloc_one",
+"__change_page_attr",
+"kvm_arch_hardware_setup",
+"kvm_arch_vcpu_create",
+"vmx_setup_l1d_flush",
+"alloc_coherent",
+"intel_svm_alloc_pasid_tables",
+"intel_svm_enable_prq",
+"intel_alloc_coherent",
+"alloc_pages_current",
+"alloc_pages_vma",
+"alloc_page_interleave",
+"get_page_from_freelist",
+"alloc_huge_page_nodemask",
+"__alloc_pages_nodemask",
+]
+
 
 
 
@@ -86,12 +113,9 @@ for sym in symbols:
     bpf_text += bpf_aux + '\n'
 
 
-#print("%s\n" % bpf_text)
-
 
 # initialize BPF
 b = BPF(text=bpf_text)
-
 
 
 for sym in symbols:
@@ -99,22 +123,14 @@ for sym in symbols:
 
 
 
-'''
-# read events
-# loop with callback to print_event
-b["events"].open_perf_buffer(print_event, page_cnt=64)
-while 1:
-    try:
-        b.perf_buffer_poll(timeout=1000)
-    except KeyboardInterrupt:
-        print("\n")
-        break
-'''
 
 while True:
     try:
-        #b.perf_buffer_poll(timeout=1000)
-        pass
+        sleep(1)
+        for k, v in b["symbols"].items():
+            name = symbols[k.value]
+            print("{}: {}".format(name, v.value))
+        print('-'*40 + '\n')
     except KeyboardInterrupt:
         print("\n")
         break
@@ -122,12 +138,24 @@ while True:
 
 
 
+sym_dict = {}
+for sym in symbols:
+    i = symbols.index(sym)
+    sym_dict[i] = 0
+
 for k, v in b["symbols"].items():
-    name = symbols[k.value]
-    print("{}: {} -> {}\n".format(k.value, name, v.value))
+    sym_dict[k.value] = v.value
+
+for sym in symbols:
+    i = symbols.index(sym)
+    print("%-3d: %-30s %-10d\n" % (
+           i,
+           symbols[i],
+           sym_dict[i],
+           ))
 
 
 
-b["symbols"].print_linear_hist("symbol_map_index")
+b["symbols"].print_linear_hist("sym_idx")
 
 
